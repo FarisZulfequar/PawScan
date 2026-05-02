@@ -1,0 +1,53 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+# Expo
+.expo/
+dist/
+web-build/
+
+# Dependencies
+node_modules/
+
+# Environment variables — NEVER commit these
+.env
+.env.local
+.env.development
+.env.production
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+
+# Android
+*.iml
+*.xml
+.gradle/
+local.properties
+android/
+build/
+*.apk
+*.aab
+
+# iOS
+ios/
+*.xcworkspace
+*.xcodeproj
+Pods/
+*.ipa
+
+# Expo generated
+.expo-shared/
