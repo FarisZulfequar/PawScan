@@ -10,7 +10,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 
-export function AuthScreen() {
+export default function AuthScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -30,19 +30,19 @@ export function AuthScreen() {
 
     return (
         <KeyboardAvoidingView
-            style={styles.container}
+            style={AuthScreenStyles.container}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-            <View style={styles.header}>
-                <Text style={styles.logo}>🐾 PawScan</Text>
-                <Text style={styles.tagline}>TAG LINE</Text>
+            <View style={AuthScreenStyles.header}>
+                <Text style={AuthScreenStyles.logo}>🐾 PawScan</Text>
+                <Text style={AuthScreenStyles.tagline}>TAG LINE</Text>
             </View>
 
-            <View style={styles.form}>
-                <Text style={styles.title}>{isSignUp ? 'Create Account' : 'Welcome'}</Text>
+            <View style={AuthScreenStyles.form}>
+                <Text style={AuthScreenStyles.title}>{isSignUp ? 'Create Account' : 'Welcome'}</Text>
 
                 <TextInput
-                    style={styles.input}
+                    style={AuthScreenStyles.input}
                     value={email}
                     onChangeText={setEmail}
                     placeholder="Email"
@@ -52,7 +52,7 @@ export function AuthScreen() {
                 />
 
                 <TextInput
-                    style={styles.input}
+                    style={AuthScreenStyles.input}
                     value={password}
                     onChangeText={setPassword}
                     placeholder="Password"
@@ -60,17 +60,17 @@ export function AuthScreen() {
                     secureTextEntry
                 />
 
-                <TouchableOpacity style={styles.btn} onPress={handleSubmit} disabled={loading}>
+                <TouchableOpacity style={AuthScreenStyles.btn} onPress={handleSubmit} disabled={loading}>
                     {loading ? (
                         <ActivityIndicator color="#0A0A0A" />
                     ) : (
-                        <Text style={styles.btnText}>{isSignUp ? 'Sign Up' : 'Sign In'}</Text>
+                        <Text style={AuthScreenStyles.btnText}>{isSignUp ? 'Sign Up' : 'Sign In'}</Text>
                     )}
                 </TouchableOpacity>
             </View>
 
             <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
-                <Text style={styles.toggle}>
+                <Text style={AuthScreenStyles.toggle}>
                     {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
                 </Text>
             </TouchableOpacity>
@@ -79,7 +79,7 @@ export function AuthScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const AuthScreenStyles = StyleSheet.create({
     container: { flex: 1, backgroundColor: 'black', justifyContent: 'center', padding: 24 },
     header: { alignItems: 'center', marginBottom: 48 },
     logo: { fontSize: 32, fontWeight: '700', color: 'white' },
