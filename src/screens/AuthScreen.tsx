@@ -19,10 +19,14 @@ export default function AuthScreen() {
 
     const handleSubmit = () => {
         if (!email || !password) {
-            console.log('sign in/up failed')
+            console.log('sign up failed')
         }
         if (!email.endsWith('@gmail.com')) {
             console.log('please enter a valid email address')
+        }
+
+        if (password != rePassword){
+            console.log('passwords do not match')
         }
         else {
             console.log(`\nEmail: ${email}\nPassword : ${password}`);
