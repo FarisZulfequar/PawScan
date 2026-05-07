@@ -14,6 +14,8 @@ export interface ScanResult {
     triage: TriageLevel;
     timestamp: number;
     petId: string;
+    class: string;
+    confidence: number;
 }
 
 export interface Pet {

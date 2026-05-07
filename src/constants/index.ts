@@ -1,4 +1,4 @@
-import { TriageLevel } from '../types';
+import {ScanResult, TriageLevel} from '../types';
 
 export const TRIAGE_CONFIG: Record<TriageLevel, { label: string; advice: string;  color: string; bg: string }> = {
     monitor: {
@@ -18,7 +18,7 @@ export const TRIAGE_CONFIG: Record<TriageLevel, { label: string; advice: string;
     emergency: {
         label: 'Seek Emergency Care',
         advice:
-            'This may be serious. Take your pet to a veterinary clinic or emergency animal hospital as soon as possible.',
+            'Condition may be serious. Take your pet to a veterinary clinic or emergency animal hospital as soon as possible.',
         color: '#F87171',
         bg: '#2D0A0A',
     },
@@ -40,14 +40,14 @@ export const CONDITION_INFO: Record<
         description:
             'Inflammation of the skin that can result from allergies, irritants, or infections. Commonly causes redness, itching, and flaky or weeping skin.',
         tip: 'Try to identify and remove any potential irritants (new food, detergent, plants). Prevent your pet from scratching. See a vet if symptoms persist beyond 48 hours.',
-        triage: 'vet_soon',
+        triage: 'monitor',
     },
     demodicosis: {
         label: 'Demodicosis (Mange)',
         description:
             'A parasitic skin condition caused by Demodex mites living in the hair follicles. Causes patchy hair loss, scaling, and sometimes secondary bacterial infections.',
         tip: 'Do not attempt to treat at home with over-the-counter products. See a vet within 1–2 days — prescription treatment is required and results are best when caught early.',
-        triage: 'vet_soon',
+        triage: 'emergency',
     },
     healthy: {
         label: 'Healthy Skin',
@@ -70,4 +70,62 @@ export const CONDITION_INFO: Record<
         tip: 'Ringworm can spread to other pets and humans — wash hands after handling your pet and avoid close contact until treated. See a vet promptly for antifungal medication.',
         triage: 'vet_soon',
     },
+};
+
+// Default Tests Results
+export const FAKE_RESULT_MONITOR: ScanResult = {
+    id: 'test-monitor',
+    imageUri: require('../../assets/images/healthyskin.jpg'),
+    predictions: [
+        { class: 'Healthy', confidence: 0.76 },
+        { class: 'Dermatitis', confidence: 0.14 },
+        { class: 'Hypersensitivity', confidence: 0.07 },
+        { class: 'Ringworm', confidence: 0.02 },
+        { class: 'Fungal Infections', confidence: 0.01 },
+    ],
+    topCondition: 'healthy',
+    confidencelevel: 0.76,
+    triage: 'monitor',
+    timestamp: Date.now(),
+    petId: 'pet-001',
+    class: 'Healthy',
+    confidence: 0.76,
+};
+
+export const FAKE_RESULT_VET_SOON: ScanResult = {
+    id: 'test-vet-soon',
+    imageUri: require('../../assets/images/ringwormskin.jpg'),
+    predictions: [
+        { class: 'Ringworm', confidence: 0.81 },
+        { class: 'Fungal Infections', confidence: 0.11 },
+        { class: 'Dermatitis', confidence: 0.05 },
+        { class: 'Healthy', confidence: 0.02 },
+        { class: 'Hypersensitivity', confidence: 0.01 },
+    ],
+    topCondition: 'ringworm',
+    confidencelevel: 0.81,
+    triage: 'vet_soon',
+    timestamp: Date.now(),
+    petId: 'pet-002',
+    class: 'Ringworm',
+    confidence: 0.81,
+};
+
+export const FAKE_RESULT_EMERGENCY: ScanResult = {
+    id: 'test-emergency',
+    imageUri: require('../../assets/images/demodicosisskin.jpg'),
+    predictions: [
+        { class: 'Demodicosis', confidence: 0.91 },
+        { class: 'Ringworm', confidence: 0.05 },
+        { class: 'Fungal Infections', confidence: 0.02 },
+        { class: 'Dermatitis', confidence: 0.01 },
+        { class: 'Healthy', confidence: 0.01 },
+    ],
+    topCondition: 'demodicosis',
+    confidencelevel: 0.91,
+    triage: 'emergency',
+    timestamp: Date.now(),
+    petId: 'pet-003',
+    class: 'Demodicosis',
+    confidence: 0.91,
 };
