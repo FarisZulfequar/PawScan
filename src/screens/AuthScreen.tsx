@@ -13,6 +13,7 @@ import {
 export default function AuthScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [rePassword, setRePassword] = useState('')
     const [loading, setLoading] = useState(false);
     const [isSignUp, setIsSignUp] = useState(false);
 
@@ -56,6 +57,15 @@ export default function AuthScreen() {
                     value={password}
                     onChangeText={setPassword}
                     placeholder="Password"
+                    placeholderTextColor="#444"
+                    secureTextEntry
+                />
+
+                <TextInput
+                    style={AuthScreenStyles.input}
+                    value={rePassword}
+                    onChangeText={setRePassword}
+                    placeholder="Re-Enter Password"
                     placeholderTextColor="#444"
                     secureTextEntry
                 />
