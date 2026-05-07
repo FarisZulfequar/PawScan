@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
+import { Alert } from 'react-native';
 import {
     View,
     Text,
@@ -20,18 +21,40 @@ export default function AuthScreen() {
     const handleSubmit = () => {
         if (!email || !password) {
             console.log('sign up failed')
+            missingInputAlert()
         }
-        if (!email.endsWith('@gmail.com')) {
+        else if (!email.endsWith('@gmail.com')) {
             console.log('please enter a valid email address')
+            validEmailAlert()
         }
 
-        if (password != rePassword){
+        else if (password != rePassword){
             console.log('passwords do not match')
+            unmatchedPasswordsAlert()
         }
         else {
             console.log(`\nEmail: ${email}\nPassword : ${password}`);
         }
     };
+
+
+
+    //alert functions
+
+    const missingInputAlert = () =>
+    Alert.alert('Sign Up Failed', 'Missing email or password', [
+      {text: 'OK', onPress: () => console.log('OK Pressed')},
+    ]);
+
+    const validEmailAlert = () =>
+    Alert.alert('Inccorect Email', 'Please enter a valid email', [
+      {text: 'OK', onPress: () => console.log('OK Pressed')},
+    ]);
+
+     const unmatchedPasswordsAlert = () =>
+    Alert.alert('Passwords do not match', 'Both passwords must match', [
+      {text: 'OK', onPress: () => console.log('OK Pressed')},
+    ]);
 
     return (
         <KeyboardAvoidingView
@@ -78,7 +101,7 @@ export default function AuthScreen() {
                     {loading ? (
                         <ActivityIndicator color="#0A0A0A" />
                     ) : (
-                        <Text style={AuthScreenStyles.btnText}>{'Sign In'}</Text>
+                        <Text style={AuthScreenStyles.btnText}>{'Sign Up'}</Text>
                     )}
                 </TouchableOpacity>
             </View>
