@@ -40,7 +40,7 @@ export default function AuthScreen() {
             </View>
 
             <View style={AuthScreenStyles.form}>
-                <Text style={AuthScreenStyles.title}>{isSignUp ? 'Create Account' : 'Welcome'}</Text>
+                <Text style={AuthScreenStyles.title}>{'Create Account'}</Text>
 
                 <TextInput
                     style={AuthScreenStyles.input}
@@ -74,14 +74,14 @@ export default function AuthScreen() {
                     {loading ? (
                         <ActivityIndicator color="#0A0A0A" />
                     ) : (
-                        <Text style={AuthScreenStyles.btnText}>{isSignUp ? 'Sign Up' : 'Sign In'}</Text>
+                        <Text style={AuthScreenStyles.btnText}>{'Sign In'}</Text>
                     )}
                 </TouchableOpacity>
             </View>
 
             <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
                 <Text style={AuthScreenStyles.toggle}>
-                    {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
+                    {"Already have an account? Sign In"}
                 </Text>
             </TouchableOpacity>
 
