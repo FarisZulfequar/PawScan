@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../types";
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../lib/firebase';
 
 type navigationProp = NativeStackScreenProps<RootStackParamList, 'Auth'>;
 
@@ -21,20 +23,19 @@ export default function AuthScreen({navigation}: navigationProp) {
     const [rePassword, setRePassword] = useState('')
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = () => {
-        if (!email || !password) {
-            missingInputAlert()
-        }
-        else if (!email.endsWith('@gmail.com')) {
-            validEmailAlert()
-        }
-        else if (password != rePassword){
-            unmatchedPasswordsAlert()
-        }
-        else {
-            Alert.alert('Successful', 'Account Created', [
-                {text: 'OK', onPress: () => navigation.goBack()},
-            ])
+    const handleSubmit = async () => {
+        if (!email || !password) return missingInputAlert();
+        if (!email.endsWith('@gmail.com')) return validEmailAlert();
+        if (password !== rePassword) return unmatchedPasswordsAlert();
+
+        setLoading(true);
+        try {
+            await createUserWithEmailAndPassword(auth, email, password);
+            navigation.navigate('Login');
+        } catch (error: any) {
+            Alert.alert('Sign Up Failed', 'Invalid Credentials, please type a valid email, password, and re-enter password');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -76,6 +77,7 @@ export default function AuthScreen({navigation}: navigationProp) {
                     placeholderTextColor="#444"
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    textContentType="oneTimeCode"
                 />
 
                 <TextInput
@@ -85,6 +87,7 @@ export default function AuthScreen({navigation}: navigationProp) {
                     placeholder="Password"
                     placeholderTextColor="#444"
                     secureTextEntry
+                    textContentType="oneTimeCode"
                 />
 
                 <TextInput

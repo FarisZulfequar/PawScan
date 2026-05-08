@@ -12,6 +12,8 @@ import {
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../types";
 import {AuthScreenStyles} from "./AuthScreen";
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../lib/firebase';
 
 type navigationProp = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -21,19 +23,19 @@ export default function LoginScreen({navigation}: navigationProp) {
     const [rePassword, setRePassword] = useState('')
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!email || !password) {
-            Alert.alert('Empty Email/Passowrd', 'Please enter a valid email and password', [
-                {text: 'OK', onPress: () => null},
-            ])
+            return Alert.alert('Empty Email/Password', 'Please enter a valid email and password');
         }
-        else if (!email.endsWith('@gmail.com')) {
-            Alert.alert('Incorrect Gmail', 'Please enter a valid gmail', [
-                {text: 'OK', onPress: () => null},
-            ])
-        }
-        else {
-            navigation.navigate('Home')
+
+        setLoading(true);
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            navigation.navigate('Home');
+        } catch (error: any) {
+            Alert.alert('Sign In Failed', 'Invalid Credentials, please check your email and password');
+        } finally {
+            setLoading(false);
         }
     };
 
