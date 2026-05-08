@@ -30,6 +30,7 @@ export interface Pet {
 export type RootStackParamList = {
     Auth: undefined;
     Home: undefined;
+    Login: undefined;
     Camera: { petId: string };
     Result: { result: ScanResult };
     History: { petId?: string };

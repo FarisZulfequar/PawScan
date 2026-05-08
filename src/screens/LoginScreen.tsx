@@ -7,43 +7,51 @@ import {
     KeyboardAvoidingView,
     Platform,
     StyleSheet,
-    ActivityIndicator,
+    ActivityIndicator, Alert,
 } from 'react-native';
+import {NativeStackScreenProps} from "@react-navigation/native-stack";
+import {RootStackParamList} from "../types";
+import {AuthScreenStyles} from "./AuthScreen";
 
-export default function LoginScreen() {
+type navigationProp = NativeStackScreenProps<RootStackParamList, 'Login'>;
+
+export default function LoginScreen({navigation}: navigationProp) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rePassword, setRePassword] = useState('')
     const [loading, setLoading] = useState(false);
-    const [isSignUp, setIsSignUp] = useState(false);
 
     const handleSubmit = () => {
         if (!email || !password) {
-            console.log('sign in/up failed')
+            Alert.alert('Empty Email/Passowrd', 'Please enter a valid email and password', [
+                {text: 'OK', onPress: () => null},
+            ])
         }
-        if (!email.endsWith('@gmail.com')) {
-            console.log('please enter a valid email address')
+        else if (!email.endsWith('@gmail.com')) {
+            Alert.alert('Incorrect Gmail', 'Please enter a valid gmail', [
+                {text: 'OK', onPress: () => null},
+            ])
         }
         else {
-            console.log(`\nEmail: ${email}\nPassword : ${password}`);
+            navigation.navigate('Home')
         }
     };
 
     return (
         <KeyboardAvoidingView
-            style={LoginScreenStyles.container}
+            style={AuthScreenStyles.container}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-            <View style={LoginScreenStyles.header}>
-                <Text style={LoginScreenStyles.logo}>🐾 PawScan</Text>
-                <Text style={LoginScreenStyles.tagline}>TAG LINE</Text>
+            <View style={AuthScreenStyles.header}>
+                <Text style={AuthScreenStyles.logo}>🐾 PawScan</Text>
+                <Text style={AuthScreenStyles.tagline}>Healthy skin, happy pets.</Text>
             </View>
 
-            <View style={LoginScreenStyles.form}>
-                <Text style={LoginScreenStyles.title}>{'Welcome'}</Text>
+            <View style={AuthScreenStyles.form}>
+                <Text style={AuthScreenStyles.title}>{'Welcome'}</Text>
 
                 <TextInput
-                    style={LoginScreenStyles.input}
+                    style={AuthScreenStyles.input}
                     value={email}
                     onChangeText={setEmail}
                     placeholder="Email"
@@ -53,7 +61,7 @@ export default function LoginScreen() {
                 />
 
                 <TextInput
-                    style={LoginScreenStyles.input}
+                    style={AuthScreenStyles.input}
                     value={password}
                     onChangeText={setPassword}
                     placeholder="Password"
@@ -61,17 +69,17 @@ export default function LoginScreen() {
                     secureTextEntry
                 />
 
-                <TouchableOpacity style={LoginScreenStyles.btn} onPress={handleSubmit} disabled={loading}>
+                <TouchableOpacity style={AuthScreenStyles.btn} onPress={handleSubmit} disabled={loading}>
                     {loading ? (
                         <ActivityIndicator color="#0A0A0A" />
                     ) : (
-                        <Text style={LoginScreenStyles.btnText}>{'Sign In'}</Text>
+                        <Text style={AuthScreenStyles.btnText}>{'Sign In'}</Text>
                     )}
                 </TouchableOpacity>
             </View>
 
-            <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
-                <Text style={LoginScreenStyles.toggle}>
+            <TouchableOpacity onPress={() => navigation.navigate('Auth')}>
+                <Text style={AuthScreenStyles.toggle}>
                     {"Don't have an account? Sign Up"}
                 </Text>
             </TouchableOpacity>
@@ -79,30 +87,3 @@ export default function LoginScreen() {
         </KeyboardAvoidingView>
     );
 }
-
-const LoginScreenStyles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: 'black', justifyContent: 'center', padding: 24 },
-    header: { alignItems: 'center', marginBottom: 48 },
-    logo: { fontSize: 32, fontWeight: '700', color: 'white' },
-    tagline: { fontSize: 14, color: 'white', marginTop: 6 },
-    form: { gap: 12, marginBottom: 24 },
-    title: { fontSize: 22, fontWeight: '700', color: 'white', marginBottom: 8 },
-    input: {
-        backgroundColor: 'grey',
-        borderRadius: 12,
-        padding: 16,
-        color: '#fff',
-        fontSize: 18,
-        borderWidth: 1,
-        borderColor: 'white',
-    },
-    btn: {
-        backgroundColor: '#4ADE80',
-        borderRadius: 12,
-        padding: 16,
-        alignItems: 'center',
-        marginTop: 4,
-    },
-    btnText: { color: 'black', fontWeight: '700', fontSize: 16 },
-    toggle: { color: 'white', textAlign: 'center', fontSize: 14 },
-});

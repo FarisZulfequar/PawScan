@@ -10,50 +10,49 @@ import {
     StyleSheet,
     ActivityIndicator,
 } from 'react-native';
+import {NativeStackScreenProps} from "@react-navigation/native-stack";
+import {RootStackParamList} from "../types";
 
-export default function AuthScreen() {
+type navigationProp = NativeStackScreenProps<RootStackParamList, 'Auth'>;
+
+export default function AuthScreen({navigation}: navigationProp) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rePassword, setRePassword] = useState('')
     const [loading, setLoading] = useState(false);
-    const [isSignUp, setIsSignUp] = useState(false);
 
     const handleSubmit = () => {
         if (!email || !password) {
-            console.log('sign up failed')
             missingInputAlert()
         }
         else if (!email.endsWith('@gmail.com')) {
-            console.log('please enter a valid email address')
             validEmailAlert()
         }
-
         else if (password != rePassword){
-            console.log('passwords do not match')
             unmatchedPasswordsAlert()
         }
         else {
-            console.log(`\nEmail: ${email}\nPassword : ${password}`);
+            Alert.alert('Successful', 'Account Created', [
+                {text: 'OK', onPress: () => navigation.goBack()},
+            ])
         }
     };
-
-
 
     //alert functions
 
     const missingInputAlert = () =>
     Alert.alert('Sign Up Failed', 'Missing email or password', [
-      {text: 'OK', onPress: () => console.log('OK Pressed')},
+      {text: 'OK', onPress: () => null},
     ]);
 
     const validEmailAlert = () =>
-    Alert.alert('Inccorect Email', 'Please enter a valid email', [
-      {text: 'OK', onPress: () => console.log('OK Pressed')},
+    Alert.alert('Incorrect Email', 'Please enter a valid email', [
+      {text: 'OK', onPress: () => null},
     ]);
 
      const unmatchedPasswordsAlert = () =>
     Alert.alert('Passwords do not match', 'Both passwords must match', [
-      {text: 'OK', onPress: () => console.log('OK Pressed')},
+      {text: 'OK', onPress: () => setRePassword('')},
     ]);
 
     return (
@@ -63,7 +62,7 @@ export default function AuthScreen() {
         >
             <View style={AuthScreenStyles.header}>
                 <Text style={AuthScreenStyles.logo}>🐾 PawScan</Text>
-                <Text style={AuthScreenStyles.tagline}>TAG LINE</Text>
+                <Text style={AuthScreenStyles.tagline}>Healthy skin, happy pets.</Text>
             </View>
 
             <View style={AuthScreenStyles.form}>
@@ -106,7 +105,7 @@ export default function AuthScreen() {
                 </TouchableOpacity>
             </View>
 
-            <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Text style={AuthScreenStyles.toggle}>
                     {"Already have an account? Sign In"}
                 </Text>
@@ -116,7 +115,7 @@ export default function AuthScreen() {
     );
 }
 
-const AuthScreenStyles = StyleSheet.create({
+export const AuthScreenStyles = StyleSheet.create({
     container: { flex: 1, backgroundColor: 'black', justifyContent: 'center', padding: 24 },
     header: { alignItems: 'center', marginBottom: 48 },
     logo: { fontSize: 32, fontWeight: '700', color: 'white' },

@@ -1,9 +1,11 @@
 import {View, Text, TouchableOpacity, FlatList, Image} from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {Pet, ScanResult} from "../types";
+import {Pet, RootStackParamList, ScanResult} from "../types";
 import {useState} from "react";
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+type navigationProp = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-export default function HomeScreen() {
+export default function HomeScreen({navigation}: navigationProp) {
     const [pets, setPets] = useState<Pet[]>([
         { id: '1', name: 'Buddy', species: 'dog', ownerId: '1' },
     ]);
@@ -14,7 +16,7 @@ export default function HomeScreen() {
         <SafeAreaView style={{ flex: 1 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16 }}>
                 <Text>PawScan</Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Text>Log Out</Text>
                 </TouchableOpacity>
             </View>
