@@ -41,3 +41,12 @@ export async function getScans(petId?: string): Promise<ScanResult[]> {
     const snap = await getDocs(q);
     return snap.docs.map(d => ({ ...d.data() } as ScanResult));
 }
+
+export async function deleteAllScans(): Promise<void> {
+    const uid = auth.currentUser?.uid;
+    if (!uid) return;
+    const q = query(collection(db, 'scans'), where('ownerId', '==', uid));
+    const snap = await getDocs(q);
+    const deletes = snap.docs.map(d => deleteDoc(doc(db, 'scans', d.id)));
+    await Promise.all(deletes);
+}
