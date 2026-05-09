@@ -3,9 +3,12 @@ import {Text, View, StyleSheet, TouchableOpacity} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import {useRef} from "react";
+import {NativeStackScreenProps} from "@react-navigation/native-stack";
+import {RootStackParamList} from "../types";
 
+type navigationProp = NativeStackScreenProps<RootStackParamList, 'Camera'>;
 
-export default function CameraScreen() {
+export default function CameraScreen({ navigation }: navigationProp) {
     const [permission, requestPermission] = useCameraPermissions();
     const cameraRef = useRef<CameraView>(null);
 

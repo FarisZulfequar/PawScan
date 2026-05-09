@@ -8,9 +8,9 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as ImagePicker from 'expo-image-picker';
 import { RootStackParamList} from '../types';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'PetProfile'>;
+type navigationProp = NativeStackScreenProps<RootStackParamList, 'PetProfile'>;
 
-export default function PetProfileScreen({ navigation, route }: Props) {
+export default function PetProfileScreen({ navigation, route }: navigationProp) {
     const existing = route.params?.pet;
     const [name, setName] = useState(existing?.name ?? '');
     const [breed, setBreed] = useState(existing?.breed ?? '');

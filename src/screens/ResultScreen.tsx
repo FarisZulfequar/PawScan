@@ -6,6 +6,8 @@ import {
     CONDITION_INFO,
     FAKE_RESULT_EMERGENCY,
 } from '../constants';
+import {NativeStackScreenProps} from "@react-navigation/native-stack";
+import {RootStackParamList} from "../types";
 
 const { width } = Dimensions.get('window');
 
@@ -15,7 +17,9 @@ const TRIAGE_COLORS = {
     emergency: '#F87171', // red
 };
 
-export default function ResultScreen() {
+type navigationProp = NativeStackScreenProps<RootStackParamList, 'Result'>;
+
+export default function ResultScreen({ navigation }: navigationProp) {
     const result = FAKE_RESULT_EMERGENCY;
     const info = CONDITION_INFO[result.topCondition];
     const triage = TRIAGE_CONFIG[result.triage];
