@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import {
     View, Text, TextInput, TouchableOpacity,
-    StyleSheet, ScrollView, Image, Alert,
+    StyleSheet, ScrollView, Image, Alert, ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as ImagePicker from 'expo-image-picker';
-import { RootStackParamList} from '../types';
-
+import { RootStackParamList } from '../types';
+import { savePet, updatePet } from '../utils/firestore';
+import { savePetImage } from '../utils/saveImage';
+import { auth } from '../lib/firebase';
+import * as FileSystem from 'expo-file-system/legacy';
 type navigationProp = NativeStackScreenProps<RootStackParamList, 'PetProfile'>;
 
 export default function PetProfileScreen({ navigation, route }: navigationProp) {
@@ -15,10 +18,11 @@ export default function PetProfileScreen({ navigation, route }: navigationProp) 
     const [name, setName] = useState(existing?.name ?? '');
     const [breed, setBreed] = useState(existing?.breed ?? '');
     const [photoUri, setPhotoUri] = useState(existing?.photoUri ?? '');
+    const [loading, setLoading] = useState(false);
 
     const pickPhoto = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            mediaTypes: ['images'],
             allowsEditing: true,
             aspect: [1, 1],
             quality: 0.8,
@@ -28,13 +32,39 @@ export default function PetProfileScreen({ navigation, route }: navigationProp) 
         }
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!name.trim()) {
             Alert.alert('Missing Name', "Please enter your dog's name.");
             return;
         }
-        // TODO: save to Firestore
-        navigation.goBack();
+        setLoading(true);
+        try {
+            const petId = existing?.id ?? `pet_${Date.now()}`;
+            let finalPhotoUri = photoUri;
+
+            if (photoUri && !photoUri.startsWith(FileSystem.documentDirectory ?? '')) {
+                finalPhotoUri = await savePetImage(photoUri, petId);
+            }
+
+            const petData = {
+                name,
+                species: 'dog' as const,
+                breed,
+                photoUri: finalPhotoUri,
+                ownerId: auth.currentUser?.uid ?? '',
+            };
+
+            if (existing) {
+                await updatePet(existing.id, petData);
+            } else {
+                await savePet(petData);
+            }
+            navigation.goBack();
+        } catch (e) {
+            Alert.alert('Error', 'Could not save. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -48,8 +78,6 @@ export default function PetProfileScreen({ navigation, route }: navigationProp) 
             </View>
 
             <ScrollView contentContainerStyle={styles.scroll}>
-
-                {/* Photo picker */}
                 <TouchableOpacity style={styles.photoPicker} onPress={pickPhoto}>
                     {photoUri ? (
                         <Image source={{ uri: photoUri }} style={styles.photo} />
@@ -60,7 +88,6 @@ export default function PetProfileScreen({ navigation, route }: navigationProp) 
                     )}
                 </TouchableOpacity>
 
-                {/* Name */}
                 <Text style={styles.label}>Dog's Name</Text>
                 <TextInput
                     style={styles.input}
@@ -70,7 +97,6 @@ export default function PetProfileScreen({ navigation, route }: navigationProp) 
                     placeholderTextColor="#444"
                 />
 
-                {/* Breed */}
                 <Text style={styles.label}>Breed (optional)</Text>
                 <TextInput
                     style={styles.input}
@@ -80,11 +106,16 @@ export default function PetProfileScreen({ navigation, route }: navigationProp) 
                     placeholderTextColor="#444"
                 />
 
-                {/* Save */}
-                <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
-                    <Text style={styles.saveBtnText}>Save Dog</Text>
+                <TouchableOpacity
+                    style={[styles.saveBtn, loading && { opacity: 0.6 }]}
+                    onPress={handleSave}
+                    disabled={loading}
+                >
+                    {loading
+                        ? <ActivityIndicator color="#0A0A0A" />
+                        : <Text style={styles.saveBtnText}>Save Dog</Text>
+                    }
                 </TouchableOpacity>
-
             </ScrollView>
         </SafeAreaView>
     );
