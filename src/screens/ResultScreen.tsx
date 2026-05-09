@@ -1,10 +1,9 @@
 // src/screens/ResultScreen.tsx
 import React from 'react';
-import {View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Dimensions, ImageSourcePropType} from 'react-native';
+import {View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
 import {
     TRIAGE_CONFIG,
     CONDITION_INFO,
-    FAKE_RESULT_EMERGENCY,
 } from '../constants';
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../types";
@@ -19,17 +18,20 @@ const TRIAGE_COLORS = {
 
 type navigationProp = NativeStackScreenProps<RootStackParamList, 'Result'>;
 
-export default function ResultScreen({ navigation }: navigationProp) {
-    const result = FAKE_RESULT_EMERGENCY;
+export default function ResultScreen({ navigation, route }: navigationProp) {
+    const { result } = route.params;  // ← real data instead of FAKE_RESULT_EMERGENCY
     const info = CONDITION_INFO[result.topCondition];
     const triage = TRIAGE_CONFIG[result.triage];
     const triageColor = TRIAGE_COLORS[result.triage];
 
     return (
         <ScrollView style={styles.container}>
-            <Image source={ result.imageUri as ImageSourcePropType} style={styles.image} />
+            <Image
+                source={{uri: result.imageUri}}
+                style={styles.image}
+            />
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Text style={styles.back}>← Back</Text>
             </TouchableOpacity>
 

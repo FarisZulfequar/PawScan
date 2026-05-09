@@ -1,40 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useCallback} from 'react';
 import {
     View, Text, FlatList, TouchableOpacity,
     Image, StyleSheet, Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList, ScanResult } from '../types';
 import { TRIAGE_CONFIG, CONDITION_INFO } from '../constants';
+import {useFocusEffect} from "@react-navigation/native";
+import {deleteAllScans, getScans} from "../utils/firestore";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'History'>;
-
-const HISTORY_KEY = 'pawscan_history';
 
 export default function HistoryScreen({ navigation }: Props) {
     const [history, setHistory] = useState<ScanResult[]>([]);
 
-    useEffect(() => {
-        loadHistory();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            const load = async () => {
+                const scans = await getScans();
+                setHistory(scans);
+            };
+            load();
+        }, [])
+    );
 
-    const loadHistory = async () => {
-        try {
-            const raw = await AsyncStorage.getItem(HISTORY_KEY);
-            if (raw) setHistory(JSON.parse(raw));
-        } catch (e) {
-            console.error('Failed to load history', e);
-        }
-    };
-
-    const clearHistory = async () => {
+    const clearHistory = () => {
         Alert.alert('Clear History', 'Delete all scan history?', [
             { text: 'Cancel', style: 'cancel' },
             {
                 text: 'Delete', style: 'destructive', onPress: async () => {
-                    await AsyncStorage.removeItem(HISTORY_KEY);
+                    await deleteAllScans();
                     setHistory([]);
                 }
             },
