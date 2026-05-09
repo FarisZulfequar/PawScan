@@ -16,6 +16,7 @@ export interface ScanResult {
     petId: string;
     class: string;
     confidence: number;
+    ownerId: string;
 }
 
 export interface Pet {

@@ -17,7 +17,7 @@ export default function App() {
         <SafeAreaProvider>
             <NavigationContainer>
                 <Stack.Navigator
-                    initialRouteName="History"
+                    initialRouteName="Login"
                     screenOptions={{ headerShown: false }}>
                     <Stack.Screen name="Auth" component={AuthScreen} />
                     <Stack.Screen name="Login" component={LoginScreen} />

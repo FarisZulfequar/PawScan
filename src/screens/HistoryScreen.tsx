@@ -9,11 +9,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList, ScanResult } from '../types';
 import { TRIAGE_CONFIG, CONDITION_INFO } from '../constants';
 
-type navigationProp = NativeStackScreenProps<RootStackParamList, 'History'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'History'>;
 
 const HISTORY_KEY = 'pawscan_history';
 
-export default function HistoryScreen({ navigation }: navigationProp) {
+export default function HistoryScreen({ navigation }: Props) {
     const [history, setHistory] = useState<ScanResult[]>([]);
 
     useEffect(() => {
