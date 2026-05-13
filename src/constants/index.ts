@@ -85,12 +85,11 @@ export const FAKE_RESULT_MONITOR: ScanResult = {
         { class: 'Demodicosis', confidence: 0.01 },
     ],
     topCondition: 'healthy',
-    confidencelevel: 0.76,
     triage: 'monitor',
     timestamp: Date.now(),
     petId: 'pet-001',
-    class: 'Healthy',
     confidence: 0.76,
+    ownerId : '3'
 };
 
 export const FAKE_RESULT_VET_SOON: ScanResult = {
@@ -105,12 +104,11 @@ export const FAKE_RESULT_VET_SOON: ScanResult = {
         { class: 'Healthy', confidence: 0.01 },
     ],
     topCondition: 'ringworm',
-    confidencelevel: 0.81,
     triage: 'vet_soon',
     timestamp: Date.now(),
     petId: 'pet-002',
-    class: 'Ringworm',
     confidence: 0.81,
+    ownerId : '2'
 };
 
 export const FAKE_RESULT_EMERGENCY: ScanResult = {
@@ -125,10 +123,9 @@ export const FAKE_RESULT_EMERGENCY: ScanResult = {
         { class: 'Healthy', confidence: 0.01 },
     ],
     topCondition: 'demodicosis',
-    confidencelevel: 0.91,
     triage: 'emergency',
     timestamp: Date.now(),
     petId: 'pet-003',
-    class: 'Demodicosis',
     confidence: 0.91,
+    ownerId : '1'
 };

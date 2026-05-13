@@ -10,11 +10,9 @@ export interface ScanResult {
     imageUri: string;
     predictions: ScanPrediction[]; // A list of predictions from the animal
     topCondition: string; // the condition that is most likely
-    confidencelevel: number;
     triage: TriageLevel;
     timestamp: number;
     petId: string;
-    class: string;
     confidence: number;
     ownerId: string;
 }
