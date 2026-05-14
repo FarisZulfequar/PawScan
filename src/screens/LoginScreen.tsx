@@ -6,7 +6,6 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
     Platform,
-    StyleSheet,
     ActivityIndicator, Alert,
 } from 'react-native';
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
@@ -39,6 +38,11 @@ export default function LoginScreen({navigation}: navigationProp) {
         }
     };
 
+    const disclaimerAlert = () =>
+        Alert.alert('Read First Below', 'PawScan provides AI-powered insights for informational purposes only. It is not a veterinary diagnosis. Always consult a veterinarian for health decisions.', [
+            {text: 'OK', onPress: () => null},
+        ]);
+
     return (
         <KeyboardAvoidingView
             style={AuthScreenStyles.container}
@@ -46,7 +50,7 @@ export default function LoginScreen({navigation}: navigationProp) {
         >
             <View style={AuthScreenStyles.header}>
                 <Text style={AuthScreenStyles.logo}>🐾 PawScan</Text>
-                <Text style={AuthScreenStyles.tagline}>Healthy skin, happy pets.</Text>
+                <Text style={AuthScreenStyles.tagline}>Healthy skin, happy pets. </Text>
             </View>
 
             <View style={AuthScreenStyles.form}>
@@ -83,6 +87,12 @@ export default function LoginScreen({navigation}: navigationProp) {
             <TouchableOpacity onPress={() => navigation.navigate('Auth')}>
                 <Text style={AuthScreenStyles.toggle}>
                     {"Don't have an account? Sign Up"}
+                </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => disclaimerAlert()}>
+                <Text style={AuthScreenStyles.toggle}>
+                    Disclaimer
                 </Text>
             </TouchableOpacity>
 

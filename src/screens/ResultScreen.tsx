@@ -19,7 +19,7 @@ const TRIAGE_COLORS = {
 type navigationProp = NativeStackScreenProps<RootStackParamList, 'Result'>;
 
 export default function ResultScreen({ navigation, route }: navigationProp) {
-    const { result } = route.params;  // ← real data instead of FAKE_RESULT_EMERGENCY
+    const { result } = route.params;
     const info = CONDITION_INFO[result.topCondition];
     const triage = TRIAGE_CONFIG[result.triage];
     const triageColor = TRIAGE_COLORS[result.triage];
@@ -65,7 +65,7 @@ export default function ResultScreen({ navigation, route }: navigationProp) {
                 ))}
             </View>
 
-            <Text style={styles.footer}>PawScan uses AI for guidance only. Always consult a vet.</Text>
+            <Text style={styles.footer}>PawScan uses AI to get its results/percentages and may get things wrong. Always consult a licensed veterinarian.</Text>
         </ScrollView>
     );
 }

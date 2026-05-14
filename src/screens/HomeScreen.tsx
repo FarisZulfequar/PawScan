@@ -1,11 +1,11 @@
-import {View, Text, TouchableOpacity, FlatList, Image, ScrollView, StyleSheet} from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {Pet, RootStackParamList, ScanResult} from "../types";
-import {useCallback, useState} from "react";
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { signOut } from 'firebase/auth';
-import { auth } from '../lib/firebase';
-import { CONDITION_INFO } from '../constants';
+import React, {useCallback, useState} from "react";
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {onAuthStateChanged, signOut} from 'firebase/auth';
+import {auth} from '../lib/firebase';
+import {CONDITION_INFO, TRIAGE_CONFIG} from '../constants';
 import {useFocusEffect} from "@react-navigation/native";
 import {getPets, getScans} from "../utils/firestore";
 
@@ -16,15 +16,17 @@ export default function HomeScreen({ navigation }: navigationProp) {
     const [pets, setPets] = useState<Pet[]>([]);
     const [recentScans, setRecentScans] = useState<ScanResult[]>([]);
 
+
     useFocusEffect(
         useCallback(() => {
-            const load = async () => {
-                const fetchedPets = await getPets();
-                const fetchedScans = await getScans();
-                setPets(fetchedPets);
-                setRecentScans(fetchedScans.slice(0, 3));
-            };
-            load();
+            return onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    const fetchedPets = await getPets();
+                    const fetchedScans = await getScans();
+                    setPets(fetchedPets);
+                    setRecentScans(fetchedScans.slice(0, 3));
+                }
+            });
         }, [])
     );
 
@@ -39,18 +41,15 @@ export default function HomeScreen({ navigation }: navigationProp) {
                 <View style={styles.container2}>
                     <Text style={{ color: '#fff', fontSize: 24, fontWeight: '700' }}>🐾 PawScan</Text>
                     <TouchableOpacity onPress={handleLogout}>
-                        <Text style={{ color: '#F87171', fontSize: 14 }}>Log Out</Text>
+                        <Text style={{ color: '#F87171', fontSize: 14 }}>Log Out </Text>
                     </TouchableOpacity>
                 </View>
 
                 <Text style={styles.dogText}>My Dogs</Text>
-                <FlatList
-                    data={pets}
-                    horizontal
-                    keyExtractor={(item) => item.id}
-                    contentContainerStyle={{ paddingHorizontal: 16, gap: 12 }}
-                    renderItem={({ item }) => (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 12 }}>
+                    {pets.map((item) => (
                         <TouchableOpacity
+                            key={item.id}
                             onPress={() => navigation.navigate('PetProfile', { pet: item })}
                             style={{ alignItems: 'center', gap: 6 }}
                         >
@@ -63,23 +62,21 @@ export default function HomeScreen({ navigation }: navigationProp) {
                             )}
                             <Text style={{ color: '#fff', fontSize: 12 }}>{item.name}</Text>
                         </TouchableOpacity>
-                    )}
-                    ListFooterComponent={
-                        <TouchableOpacity
-                            onPress={() => navigation.navigate('PetProfile', {})}
-                            style={styles.addBtn}
-                        >
-                            <Text style={{ color: '#4ADE80', fontSize: 28 }}>+</Text>
-                        </TouchableOpacity>
-                    }
-                />
+                    ))}
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('PetProfile', {})}
+                        style={styles.addBtn}
+                    >
+                        <Text style={{ color: '#4ADE80', fontSize: 28 }}>+</Text>
+                    </TouchableOpacity>
+                </ScrollView>
 
                 <TouchableOpacity
                     onPress={() => navigation.navigate('Camera', { petId: pets[0]?.id ?? '' })}
                     style={styles.scanBtn}
                 >
                     <Text style={{ color: '#0A0A0A', fontSize: 20, fontWeight: '700', marginTop: 6 }}>Scan My Dog</Text>
-                    <Text style={{ color: '#1a3d1a', fontSize: 13, marginTop: 4 }}>Take or upload a photo</Text>
+                    <Text style={{ color: '#1a3d1a', fontSize: 13, marginTop: 4 }}>Take/Upload a photo </Text>
                 </TouchableOpacity>
 
                 <View style={[styles.container2, { paddingHorizontal: 16, paddingVertical: 16 }]}>
@@ -96,6 +93,7 @@ export default function HomeScreen({ navigation }: navigationProp) {
                     keyExtractor={(item) => item.id}
                     scrollEnabled={false}
                     renderItem={({ item }) => {
+                        const triage = TRIAGE_CONFIG[item.triage];
                         const info = CONDITION_INFO[item.topCondition];
                         return (
                             <TouchableOpacity
@@ -109,6 +107,8 @@ export default function HomeScreen({ navigation }: navigationProp) {
                                 <View style={{ flex: 1 }}>
                                     <Text style={{ color: '#fff', fontSize: 15, fontWeight: '600', marginBottom: 3 }}>
                                         {info?.label ?? item.topCondition}
+                                    </Text>
+                                    <Text style={{ color: triage?.color, fontSize: 12, marginBottom: 3 }}>
                                     </Text>
                                     <Text style={{ color: '#555', fontSize: 11 }}>
                                         {new Date(item.timestamp).toLocaleDateString()}
@@ -125,6 +125,7 @@ export default function HomeScreen({ navigation }: navigationProp) {
                     }
                 />
             </ScrollView>
+            <Text style={styles.footer}>PawScan uses AI for guidance only. Always consult a vet.</Text>
         </SafeAreaView>
     );
 }
@@ -138,5 +139,6 @@ const styles = StyleSheet.create({
         height: 70, width: 70, borderRadius: 35, backgroundColor: '#141414', borderWidth: 1, borderColor: '#2A2A2A', borderStyle: 'dashed', justifyContent: 'center', alignItems: 'center', marginLeft: 12
     },
     resultBtn: { flexDirection: 'row', gap: 12, backgroundColor: '#141414', borderRadius: 14, padding: 12, marginHorizontal: 16, marginBottom: 10, alignItems: 'center'},
-    scanBtn: {backgroundColor: '#4ADE80', borderRadius: 20, margin: 16, padding: 24, alignItems: 'center'}
+    scanBtn: {backgroundColor: '#4ADE80', borderRadius: 20, margin: 16, padding: 24, alignItems: 'center'},
+    footer: { padding: 16, fontSize: 12, color: '#C4B5C4', textAlign: 'center', marginTop: 8 },
 })

@@ -42,19 +42,24 @@ export default function AuthScreen({navigation}: navigationProp) {
     //alert functions
 
     const missingInputAlert = () =>
-    Alert.alert('Sign Up Failed', 'Missing email or password', [
-      {text: 'OK', onPress: () => null},
-    ]);
+        Alert.alert('Sign Up Failed', 'Missing email or password', [
+            {text: 'OK', onPress: () => null},
+        ]);
 
     const validEmailAlert = () =>
-    Alert.alert('Incorrect Email', 'Please enter a valid email', [
-      {text: 'OK', onPress: () => null},
-    ]);
+        Alert.alert('Incorrect Email', 'Please enter a valid email', [
+            {text: 'OK', onPress: () => null},
+        ]);
 
-     const unmatchedPasswordsAlert = () =>
-    Alert.alert('Passwords do not match', 'Both passwords must match', [
-      {text: 'OK', onPress: () => setRePassword('')},
-    ]);
+    const unmatchedPasswordsAlert = () =>
+        Alert.alert('Passwords do not match', 'Both passwords must match', [
+            {text: 'OK', onPress: () => setRePassword('')},
+        ]);
+
+    const disclaimerAlert = () =>
+        Alert.alert('Read First Below', 'PawScan provides AI-powered insights for informational purposes only. It is not a veterinary diagnosis. Always consult a veterinarian for health decisions.', [
+            {text: 'OK', onPress: () => null},
+        ]);
 
     return (
         <KeyboardAvoidingView
@@ -62,8 +67,8 @@ export default function AuthScreen({navigation}: navigationProp) {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
             <View style={AuthScreenStyles.header}>
-                <Text style={AuthScreenStyles.logo}>🐾 PawScan</Text>
-                <Text style={AuthScreenStyles.tagline}>Healthy skin, happy pets.</Text>
+                <Text style={AuthScreenStyles.logo}>🐾 PawScan </Text>
+                <Text style={AuthScreenStyles.tagline}>Healthy skin, happy pets. </Text>
             </View>
 
             <View style={AuthScreenStyles.form}>
@@ -110,7 +115,13 @@ export default function AuthScreen({navigation}: navigationProp) {
 
             <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Text style={AuthScreenStyles.toggle}>
-                    {"Already have an account? Sign In"}
+                    Already have an account? Sign In
+                </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => disclaimerAlert()}>
+                <Text style={AuthScreenStyles.toggle}>
+                    Disclaimer
                 </Text>
             </TouchableOpacity>
 
@@ -142,5 +153,6 @@ export const AuthScreenStyles = StyleSheet.create({
         marginTop: 4,
     },
     btnText: { color: 'black', fontWeight: '700', fontSize: 16 },
-    toggle: { color: 'white', textAlign: 'center', fontSize: 14 },
+    toggle: { color: 'white', textAlign: 'center', fontSize: 14, marginBottom : 20 },
+    footer: {fontSize: 10, color: '#C4B5C4', textAlign: 'center' },
 });

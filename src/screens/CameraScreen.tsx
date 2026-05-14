@@ -54,9 +54,9 @@ export default function CameraScreen({ navigation, route }: navigationProp) {
         return (
             <SafeAreaView style={CameraScreenStyles.container2}>
                 <View style={CameraScreenStyles.container}>
-                    <Text style={{ textAlign: 'center' }}>Grant access to camera</Text>
+                    <Text style={{ textAlign: 'center' }}> Grant access to camera </Text>
                     <TouchableOpacity onPress={requestPermission}>
-                        <Text style={{ textAlign: 'center' }}>Give Access</Text>
+                        <Text style={{ marginTop : 10, textAlign: 'center' }}>Give Access </Text>
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>
@@ -76,20 +76,20 @@ export default function CameraScreen({ navigation, route }: navigationProp) {
 
             {/* Bottom controls */}
             <View style={CameraScreenStyles.camera}>
-                <TouchableOpacity onPress={pickFromGallery} disabled={loading}>
-                    <Text style={{ color: '#fff' }}>Gallery</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={takePhoto} style={CameraScreenStyles.btn} disabled={loading}>
-                    {loading ? <ActivityIndicator color="#fff" /> : <Text>🐾</Text>}
+                <TouchableOpacity onPress={pickFromGallery} disabled={loading} style={CameraScreenStyles.galleryBtn}>
+                    <Text style={{ color: '#4ADE80', fontSize: 16}}>Gallery </Text>
                 </TouchableOpacity>
 
                 <View style={{ width: 50 }} />
+
+                <TouchableOpacity onPress={takePhoto} style={CameraScreenStyles.btn} disabled={loading}>
+                    {loading ? <ActivityIndicator color="#fff" /> : <Text style={{ fontSize: 32 }}>🐾</Text>}
+                </TouchableOpacity>
             </View>
 
             {/* Loading overlay */}
             {loading && (
-                <View style={{ ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.85)', justifyContent: 'center', alignItems: 'center', gap: 16 }}>
+                <View style={[{...StyleSheet.absoluteFillObject}, CameraScreenStyles.loadingWheel]}>
                     <ActivityIndicator color="#4ADE80" size="large" />
                     <Text style={{ color: '#4ADE80', fontSize: 16 }}>Analyzing...</Text>
                 </View>
@@ -107,11 +107,14 @@ const CameraScreenStyles = StyleSheet.create({
     container2 : {
         flex: 1,
     },
-    camera : {
-        position: "absolute",
+    camera: {
+        position: 'absolute',
         bottom: 50,
-        width: "100%",
-        alignItems: "center",
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 40,
     },
     btn : {
         width: 70,
@@ -121,4 +124,15 @@ const CameraScreenStyles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
+    galleryBtn: {
+        width: 80,
+        height: 60,
+        borderRadius: 10,
+        backgroundColor: "black",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    loadingWheel : {
+        backgroundColor: 'rgba(0,0,0,0.85)', justifyContent: 'center', alignItems: 'center', gap: 16
+    }
 });

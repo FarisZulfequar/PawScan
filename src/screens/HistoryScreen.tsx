@@ -66,7 +66,7 @@ export default function HistoryScreen({ navigation }: Props) {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Text style={styles.back}>←</Text>
                 </TouchableOpacity>
-                <Text style={styles.title}>Scan History</Text>
+                <Text style={styles.title}>Scan History </Text>
                 {history.length > 0 ? (
                     <TouchableOpacity onPress={clearHistory}>
                         <Text style={styles.clear}>Clear</Text>
@@ -77,12 +77,12 @@ export default function HistoryScreen({ navigation }: Props) {
             {history.length === 0 ? (
                 <View style={styles.empty}>
                     <Text style={styles.emptyIcon}>🐾</Text>
-                    <Text style={styles.emptyText}>No scans yet</Text>
+                    <Text style={styles.emptyText}>No scans yet </Text>
                     <TouchableOpacity
                         style={styles.emptyBtn}
                         onPress={() => navigation.navigate('Camera', { petId: '' })}
                     >
-                        <Text style={styles.emptyBtnText}>Scan My Pet</Text>
+                        <Text style={styles.emptyBtnText}>Scan My Pet </Text>
                     </TouchableOpacity>
                 </View>
             ) : (
