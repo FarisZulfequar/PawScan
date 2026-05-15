@@ -22,7 +22,6 @@ export interface Pet {
     name: string;
     species: 'dog';
     breed?: string;
-    photoUri?: string;
     ownerId: string;
 }
 

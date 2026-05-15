@@ -11,7 +11,17 @@ import {getPets, getScans} from "../utils/firestore";
 
 type navigationProp = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
+const AVATAR_COLORS = [
+    '#EF4444', '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6',
+    '#EC4899', '#14B8A6', '#F97316', '#6366F1', '#84CC16',
+    '#06B6D4', '#D946EF', '#EAB308', '#22C55E', '#0EA5E9',
+    '#A855F7', '#DC2626', '#2563EB', '#CA8A04', '#059669',
+];
 
+const getAvatarColor = (id: string) => {
+    const index = id.charCodeAt(0) % AVATAR_COLORS.length;
+    return AVATAR_COLORS[index];
+};
 export default function HomeScreen({ navigation }: navigationProp) {
     const [pets, setPets] = useState<Pet[]>([]);
     const [recentScans, setRecentScans] = useState<ScanResult[]>([]);
@@ -20,10 +30,12 @@ export default function HomeScreen({ navigation }: navigationProp) {
     useFocusEffect(
         useCallback(() => {
             return onAuthStateChanged(auth, async (user) => {
+                console.log('auth user:', user?.uid);
                 if (user) {
                     const fetchedPets = await getPets();
-                    const fetchedScans = await getScans();
+                    console.log('fetched pets:', fetchedPets.length, fetchedPets);
                     setPets(fetchedPets);
+                    const fetchedScans = await getScans();
                     setRecentScans(fetchedScans.slice(0, 3));
                 }
             });
@@ -50,16 +62,14 @@ export default function HomeScreen({ navigation }: navigationProp) {
                     {pets.map((item) => (
                         <TouchableOpacity
                             key={item.id}
-                            onPress={() => navigation.navigate('PetProfile', { pet: item })}
+                            onPress={() => navigation.navigate('History', { petId: item.id })}
                             style={{ alignItems: 'center', gap: 6 }}
                         >
-                            {item.photoUri ? (
-                                <Image source={{ uri: item.photoUri }} style={{ height: 70, width: 70, borderRadius: 35 }} />
-                            ) : (
-                                <View style={styles.imagecontainer}>
-                                    <Text style={{ fontSize: 30, color: '#fff' }}>+</Text>
-                                </View>
-                            )}
+                            <View style={[styles.imagecontainer, { backgroundColor: getAvatarColor(item.id) }]}>
+                                <Text style={{ fontSize: 24, color: '#fff', fontWeight: '700' }}>
+                                    {item.name.slice(0, 2).toUpperCase()}
+                                </Text>
+                            </View>
                             <Text style={{ color: '#fff', fontSize: 12 }}>{item.name}</Text>
                         </TouchableOpacity>
                     ))}

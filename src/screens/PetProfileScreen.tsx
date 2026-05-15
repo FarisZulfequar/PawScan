@@ -1,36 +1,20 @@
 import React, { useState } from 'react';
 import {
     View, Text, TextInput, TouchableOpacity,
-    StyleSheet, ScrollView, Image, Alert, ActivityIndicator,
+    StyleSheet, ScrollView, Alert, ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import * as ImagePicker from 'expo-image-picker';
 import { RootStackParamList } from '../types';
 import { savePet, updatePet } from '../utils/firestore';
-import { savePetImage } from '../utils/saveImage';
 import { auth } from '../lib/firebase';
-import * as FileSystem from 'expo-file-system/legacy';
 type navigationProp = NativeStackScreenProps<RootStackParamList, 'PetProfile'>;
 
 export default function PetProfileScreen({ navigation, route }: navigationProp) {
     const existing = route.params?.pet;
     const [name, setName] = useState(existing?.name ?? '');
     const [breed, setBreed] = useState(existing?.breed ?? '');
-    const [photoUri, setPhotoUri] = useState(existing?.photoUri ?? '');
     const [loading, setLoading] = useState(false);
-
-    const pickPhoto = async () => {
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ['images'],
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 0.8,
-        });
-        if (!result.canceled && result.assets[0]) {
-            setPhotoUri(result.assets[0].uri);
-        }
-    };
 
     const handleSave = async () => {
         if (!name.trim()) {
@@ -39,18 +23,11 @@ export default function PetProfileScreen({ navigation, route }: navigationProp) 
         }
         setLoading(true);
         try {
-            const petId = existing?.id ?? `pet_${Date.now()}`;
-            let finalPhotoUri = photoUri;
-
-            if (photoUri && !photoUri.startsWith(FileSystem.documentDirectory ?? '')) {
-                finalPhotoUri = await savePetImage(photoUri, petId);
-            }
-
             const petData = {
                 name,
                 species: 'dog' as const,
                 breed,
-                photoUri: finalPhotoUri,
+                photoUri: '',
                 ownerId: auth.currentUser?.uid ?? '',
             };
 
@@ -78,16 +55,6 @@ export default function PetProfileScreen({ navigation, route }: navigationProp) 
             </View>
 
             <ScrollView contentContainerStyle={styles.scroll}>
-                <TouchableOpacity style={styles.photoPicker} onPress={pickPhoto}>
-                    {photoUri ? (
-                        <Image source={{ uri: photoUri }} style={styles.photo} />
-                    ) : (
-                        <View style={styles.photoPlaceholder}>
-                            <Text style={styles.photoHint}>Tap to add photo</Text>
-                        </View>
-                    )}
-                </TouchableOpacity>
-
                 <Text style={styles.label}>Dog's Name</Text>
                 <TextInput
                     style={styles.input}
@@ -130,16 +97,6 @@ const styles = StyleSheet.create({
     back: { color: '#4ADE80', fontSize: 22 },
     title: { color: '#fff', fontSize: 17, fontWeight: '700' },
     scroll: { padding: 20, paddingBottom: 40 },
-    photoPicker: { alignSelf: 'center', marginBottom: 28 },
-    photo: { width: 120, height: 120, borderRadius: 60 },
-    photoPlaceholder: {
-        width: 120, height: 120, borderRadius: 60,
-        backgroundColor: '#141414', borderWidth: 1,
-        borderColor: '#2A2A2A', borderStyle: 'dashed',
-        justifyContent: 'center', alignItems: 'center', gap: 6,
-    },
-    photoIcon: { fontSize: 32 },
-    photoHint: { color: '#555', fontSize: 11 },
     label: { color: '#888', fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 },
     input: {
         backgroundColor: '#141414', borderRadius: 12,

@@ -52,7 +52,7 @@ export const CONDITION_INFO: Record<
     healthy: {
         label: 'Healthy Skin',
         description:
-            'No significant skin condition detected. Your pet\'s skin and coat appear normal based on this scan.',
+            'No significant skin condition detected. The skin of your pet skin and coat appear normal based on this scan.',
         tip: 'Great news! Keep up with regular grooming, a balanced diet, and routine vet check-ups to maintain your pet\'s healthy skin and coat.',
         triage: 'monitor',
     },
