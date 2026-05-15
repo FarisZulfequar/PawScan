@@ -8,6 +8,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, ScanResult } from '../types';
 import { useFocusEffect } from "@react-navigation/native";
 import { deleteAllScans, getScans } from "../utils/firestore";
+import {CONDITION_INFO} from "../constants";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'History'>;
 
