@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, ScanResult } from '../types';
 import { useFocusEffect } from "@react-navigation/native";
-import { deleteAllScans, getScans } from "../utils/firestore";
+import {deleteAllScans, deletePet, getScans} from "../utils/firestore";
 import {CONDITION_INFO} from "../constants";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'History'>;
@@ -31,8 +31,20 @@ export default function HistoryScreen({ navigation, route }: Props) {
             { text: 'Cancel', style: 'cancel' },
             {
                 text: 'Delete', style: 'destructive', onPress: async () => {
-                    await deleteAllScans();
+                    await deleteAllScans(petId);
                     setHistory([]);
+                }
+            },
+        ]);
+    };
+
+    const handleDeletePet = (petId: string) => {
+        Alert.alert('Delete Pet', 'This will delete this pet and all their scans.', [
+            { text: 'Cancel', style: 'cancel' },
+            {
+                text: 'Delete', style: 'destructive', onPress: async () => {
+                    await deletePet(petId);
+                    navigation.goBack();  // go back after deleting
                 }
             },
         ]);
@@ -67,7 +79,7 @@ export default function HistoryScreen({ navigation, route }: Props) {
                 <Text style={styles.title}>Scan History</Text>
                 {history.length > 0 ? (
                     <TouchableOpacity onPress={clearHistory}>
-                        <Text style={styles.clear}>Clear</Text>
+                        <Text style={styles.clear}>Clear All Pet Scans</Text>
                     </TouchableOpacity>
                 ) : <View style={{ width: 40 }} />}
             </View>
@@ -90,8 +102,18 @@ export default function HistoryScreen({ navigation, route }: Props) {
                     renderItem={renderItem}
                     contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
                     showsVerticalScrollIndicator={false}
+
                 />
             )}
+            <TouchableOpacity
+                onPress={() => {
+                    if (!petId) return;
+                    handleDeletePet(petId);
+                }}
+                style={styles.footer}
+            >
+                <Text style={{ color: '#ff4444', fontSize: 16 }}>Delete Pet</Text>
+            </TouchableOpacity>
         </SafeAreaView>
     );
 }
@@ -114,7 +136,7 @@ const styles = StyleSheet.create({
     condition: { color: '#fff', fontSize: 15, fontWeight: '600', marginBottom: 3 },
     triage: { fontSize: 12, marginBottom: 3 },
     date: { fontSize: 11, color: '#555' },
-    arrow: { color: '#444', fontSize: 20 },
+    arrow: { color: '#fff', fontSize: 20 },
     empty: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 12 },
     emptyIcon: { fontSize: 48 },
     emptyText: { color: '#555', fontSize: 16 },
@@ -123,4 +145,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 24, paddingVertical: 12, marginTop: 8,
     },
     emptyBtnText: { color: '#0A0A0A', fontWeight: '700', fontSize: 15 },
+    footer : {
+        alignSelf: 'center',
+        justifyContent: 'space-between',
+        marginBottom : 20,
+    }
 });
