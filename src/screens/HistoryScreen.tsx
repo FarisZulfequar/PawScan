@@ -6,23 +6,23 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, ScanResult } from '../types';
-import { TRIAGE_CONFIG, CONDITION_INFO } from '../constants';
-import {useFocusEffect} from "@react-navigation/native";
-import {deleteAllScans, getScans} from "../utils/firestore";
+import { useFocusEffect } from "@react-navigation/native";
+import { deleteAllScans, getScans } from "../utils/firestore";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'History'>;
 
-export default function HistoryScreen({ navigation }: Props) {
+export default function HistoryScreen({ navigation, route }: Props) {
     const [history, setHistory] = useState<ScanResult[]>([]);
+    const petId = route.params?.petId;
 
     useFocusEffect(
         useCallback(() => {
             const load = async () => {
-                const scans = await getScans();
+                const scans = await getScans(petId);
                 setHistory(scans);
             };
             load();
-        }, [])
+        }, [petId])
     );
 
     const clearHistory = () => {
@@ -38,7 +38,6 @@ export default function HistoryScreen({ navigation }: Props) {
     };
 
     const renderItem = ({ item }: { item: ScanResult }) => {
-        const triage = TRIAGE_CONFIG[item.triage];
         const info = CONDITION_INFO[item.topCondition];
         return (
             <TouchableOpacity
@@ -46,13 +45,11 @@ export default function HistoryScreen({ navigation }: Props) {
                 onPress={() => navigation.navigate('Result', { result: item })}
             >
                 <Image
-                    source={{uri: item.imageUri}}
+                    source={{uri: item.imageUri as string}}
                     style={styles.thumb}
                 />
                 <View style={{ flex: 1 }}>
                     <Text style={styles.condition}>{info?.label ?? item.topCondition}</Text>
-                    <Text style={[styles.triage, { color: triage.color }]}>
-                    </Text>
                     <Text style={styles.date}>{new Date(item.timestamp).toLocaleDateString()}</Text>
                 </View>
                 <Text style={styles.arrow}>›</Text>
@@ -66,7 +63,7 @@ export default function HistoryScreen({ navigation }: Props) {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Text style={styles.back}>←</Text>
                 </TouchableOpacity>
-                <Text style={styles.title}>Scan History </Text>
+                <Text style={styles.title}>Scan History</Text>
                 {history.length > 0 ? (
                     <TouchableOpacity onPress={clearHistory}>
                         <Text style={styles.clear}>Clear</Text>
@@ -77,12 +74,12 @@ export default function HistoryScreen({ navigation }: Props) {
             {history.length === 0 ? (
                 <View style={styles.empty}>
                     <Text style={styles.emptyIcon}>🐾</Text>
-                    <Text style={styles.emptyText}>No scans yet </Text>
+                    <Text style={styles.emptyText}>No scans yet</Text>
                     <TouchableOpacity
                         style={styles.emptyBtn}
-                        onPress={() => navigation.navigate('Camera', { petId: '' })}
+                        onPress={() => navigation.navigate('Camera', { petId: petId ?? '' })}
                     >
-                        <Text style={styles.emptyBtnText}>Scan My Pet </Text>
+                        <Text style={styles.emptyBtnText}>Scan My Pet</Text>
                     </TouchableOpacity>
                 </View>
             ) : (

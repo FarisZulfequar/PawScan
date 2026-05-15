@@ -30,13 +30,11 @@ export default function HomeScreen({ navigation }: navigationProp) {
     useFocusEffect(
         useCallback(() => {
             return onAuthStateChanged(auth, async (user) => {
-                console.log('auth user:', user?.uid);
                 if (user) {
                     const fetchedPets = await getPets();
-                    console.log('fetched pets:', fetchedPets.length, fetchedPets);
                     setPets(fetchedPets);
                     const fetchedScans = await getScans();
-                    setRecentScans(fetchedScans.slice(0, 3));
+                    setRecentScans(fetchedScans.slice(0, 4));
                 }
             });
         }, [])

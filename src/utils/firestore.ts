@@ -35,11 +35,15 @@ export async function saveScan(scan: ScanResult): Promise<void> {
 export async function getScans(petId?: string): Promise<ScanResult[]> {
     const uid = auth.currentUser?.uid;
     if (!uid) return [];
-    const q = petId
-        ? query(collection(db, 'scans'), where('petId', '==', petId), orderBy('timestamp', 'desc'))
-        : query(collection(db, 'scans'), where('ownerId', '==', uid), orderBy('timestamp', 'desc'));
-    const snap = await getDocs(q);
-    return snap.docs.map(d => ({ ...d.data() } as ScanResult));
+    try {
+        const q = petId
+            ? query(collection(db, 'scans'), where('petId', '==', petId), orderBy('timestamp', 'desc'))
+            : query(collection(db, 'scans'), where('ownerId', '==', uid), orderBy('timestamp', 'desc'));
+        const snap = await getDocs(q);
+        return snap.docs.map(d => ({ id: d.id, ...d.data() } as ScanResult));
+    } catch (e) {
+        throw e;
+    }
 }
 
 export async function deleteAllScans(): Promise<void> {

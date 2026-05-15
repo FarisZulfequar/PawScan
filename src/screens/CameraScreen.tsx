@@ -77,7 +77,7 @@ export default function CameraScreen({ navigation, route }: navigationProp) {
             {/* Bottom controls */}
             <View style={CameraScreenStyles.camera}>
                 <TouchableOpacity onPress={pickFromGallery} disabled={loading} style={CameraScreenStyles.galleryBtn}>
-                    <Text style={{ color: '#4ADE80', fontSize: 16}}>Gallery </Text>
+                    <Text style={{ color: '#4ADE80', fontSize: 16}}>Gallery</Text>
                 </TouchableOpacity>
 
                 <View style={{ width: 50 }} />
@@ -125,7 +125,7 @@ const CameraScreenStyles = StyleSheet.create({
         alignItems: "center",
     },
     galleryBtn: {
-        width: 80,
+        width: 75,
         height: 60,
         borderRadius: 10,
         backgroundColor: "black",
