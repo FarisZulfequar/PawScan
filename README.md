@@ -79,8 +79,8 @@ The classification model was trained using TensorFlow/Keras with transfer learni
 
 ## Author
 
-Built by [Faris Zulfquar](https://github.com/FarisZulfequar)
+Built by [Anais Zulfequar](https://github.com/AZ-4321) & [Faris Zulfquar](https://github.com/FarisZulfequar)
 
 ---
 
-*PawScan is for informational purposes only and is not a substitute for professional veterinary advice.*
+*PawScan is for informational purposes only and is not a substitute for professional veterinary advice. It might get information/outcomes wrong.*
